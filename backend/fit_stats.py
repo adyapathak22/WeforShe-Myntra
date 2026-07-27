@@ -75,20 +75,29 @@ def _summarize(group: pd.DataFrame, cluster: str = None) -> dict:
 
     top_brands = group["brand"].value_counts().head(2).index.tolist() if n else []
 
-    # Pick the size with the strongest combination of real fit outcome and
-    # support.  Ties favour the result with more evidence, then the raw rate.
     size_breakdown = _size_breakdown(group)
     recommended_size = None
+
     if size_breakdown:
-        recommended_size = max(
+        ranked = sorted(
             size_breakdown,
             key=lambda s: (
                 size_breakdown[s]["score"],
                 size_breakdown[s]["n"],
                 size_breakdown[s]["kept_rate"],
             ),
+            reverse=True,
         )
+        top = ranked[0]
 
+        MIN_SCORE_MARGIN = 0.05
+        if len(ranked) > 1 and (
+            size_breakdown[top]["score"]
+            - size_breakdown[ranked[1]]["score"]
+        ) < MIN_SCORE_MARGIN:
+            recommended_size = None
+        else:
+            recommended_size = top
     return {
         "n": n,
         "kept_rate": round(kept / n, 2) if n else 0.0,

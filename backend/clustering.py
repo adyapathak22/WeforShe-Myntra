@@ -55,6 +55,7 @@ class BodyClusterer:
                 continue
             X = gender_df[["height_cm", "weight_kg"]].values
             X_scaled = self.scalers[gender].fit_transform(X)
+            X_scaled[:, 0] *= 0.3
             self.models[gender].fit(X_scaled)
             self._label_clusters(gender, gender_df)
 
@@ -89,6 +90,7 @@ class BodyClusterer:
 
         if gender in GENDERS:
             X_scaled = self.scalers[gender].transform(X_new)
+            X_scaled[:, 0] *= 0.3
             idx = self.models[gender].predict(X_scaled)[0]
             return f"{gender}_Cluster_{idx}"
 
@@ -112,6 +114,7 @@ class BodyClusterer:
                 continue
             X = gender_df[["height_cm", "weight_kg"]].values
             X_scaled = self.scalers[gender].transform(X)
+            X_scaled[:, 0] *= 0.3
             clusters = self.models[gender].predict(X_scaled)
             df.loc[mask, "cluster"] = [f"{gender}_Cluster_{c}" for c in clusters]
         return df

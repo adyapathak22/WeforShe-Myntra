@@ -1321,7 +1321,7 @@
         // only, no brand at all - should show the generic "Limited Data Match"
         // screen. Previously this required BOTH brand AND category, which
         // wrongly treated real brand-specific matches as if they were generic.
-        const isSpecificMatch = data.matched_on && data.matched_on.includes("brand");
+        const isSpecificMatch = data.confidence_score != null && data.confidence_score >= 60;
         const keptRate = data.stats && data.stats.kept_rate != null ? Math.round(data.stats.kept_rate * 100) : null;
         const recSize = data.recommended_size || (data.stats && data.stats.recommended_size) || "M";
 

@@ -888,7 +888,7 @@
         // See mynfit_product_detail_page/code.html for why this only checks
         // "brand", not "brand" AND "category" - any brand-aware match level
         // is real, brand-specific data and deserves the confident match screen.
-        const isSpecificMatch = data.matched_on && data.matched_on.includes("brand");
+        const isSpecificMatch = data.confidence_score != null && data.confidence_score >= 60;
         const keptRate =
           data.stats && data.stats.kept_rate != null
             ? Math.round(data.stats.kept_rate * 100)
